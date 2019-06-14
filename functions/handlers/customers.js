@@ -23,6 +23,10 @@ exports.getAllCustomers = (req, res) => {
     });
 };
 
+// exports.getOneCustomer = (req, res) => {
+
+// }
+
 exports.postOneCustomer = (req, res) => {
   // create new customer request object
   const newCustomer = {

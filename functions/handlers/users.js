@@ -1,4 +1,4 @@
-const { db } = require("../util/admin");
+const { admin, db } = require("../util/admin");
 
 const { firebaseConfig } = require("../util/config");
 
