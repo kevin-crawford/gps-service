@@ -10,7 +10,7 @@ exports.getAllCustomers = (req, res) => {
       data.forEach(doc => {
         customers.push({
           name: doc.data().name,
-          custId: doc.id,
+          customerId: doc.id,
           address: doc.data().address,
           phoneNum: doc.data().phoneNum,
           createdAt: doc.data().createdAt
@@ -22,10 +22,6 @@ exports.getAllCustomers = (req, res) => {
       console.err(err);
     });
 };
-
-// exports.getOneCustomer = (req, res) => {
-
-// }
 
 exports.postOneCustomer = (req, res) => {
   // create new customer request object
@@ -62,5 +58,37 @@ exports.postOneCustomer = (req, res) => {
             console.log(err);
           });
       }
+    });
+};
+
+exports.getOneCustomer = (req, res) => {
+  console.log(req.params.customerId);
+  // check for customer id in the request parameters
+  if (!req.params.customerId) {
+    return res.status(200).json({ message: "No customer id" });
+  }
+
+  // call the db to find the customer by its ID
+  db.doc(`/customers/${req.params.customerId}`)
+    .get()
+    .then(doc => {
+      // if it does not exists, respond with not found
+      if (!doc.exists) {
+        return res.status(400).json({ message: "Customer not found" });
+      } else {
+        // return data from document
+        console.log(doc.data());
+        return res.status(200).json({
+          name: doc.data().name,
+          customerId: doc.id,
+          address: doc.data().address,
+          phoneNum: doc.data().phoneNum,
+          createdAt: doc.data().createdAt
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Something went wrong" });
     });
 };

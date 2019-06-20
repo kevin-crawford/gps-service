@@ -7,7 +7,9 @@ const {
   postOneCustomer,
   getOneCustomer
 } = require("./handlers/customers");
+
 const { signup, login } = require("./handlers/users");
+
 const {
   getAllJobs,
   getJobsByDate,
@@ -17,7 +19,7 @@ const {
 
 // customer routes
 app.get("/customers", getAllCustomers);
-app.get("/customers/:customerId", FBAuth, getOneCustomer);
+app.get("/customers/:customerId", getOneCustomer);
 app.post("/customers", postOneCustomer);
 
 // user routes
