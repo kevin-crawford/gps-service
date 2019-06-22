@@ -36,6 +36,7 @@ exports.validateLoginData = data => {
   let errors = {};
   if (isEmpty(data.email)) errors.email = "Must not be empty";
   if (isEmpty(data.password)) errors.password = "Must not be empty";
+  
 
   return {
     errors,
@@ -47,7 +48,6 @@ exports.validateJobData = data => {
   let errors = {};
 
   if (isEmpty(data.customer)) errors.customer = "Must not be empty";
-  if (isEmpty(data.jobDate)) errors.jobDate = "Must not be empty";
   if (isEmpty(data.description)) errors.description = "Must not be empty";
 
   return {

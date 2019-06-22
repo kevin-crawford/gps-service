@@ -59,11 +59,11 @@ exports.getJobsByDate = (req, res) => {
 };
 
 exports.postOneJob = (req, res) => {
+  
   const newJob = {
     customer: req.body.customer,
     createdAt: new Date().toISOString(),
     jobDate: req.body.jobDate || "",
-    createdBy: req.user.name,
     notified: false,
     description: req.body.description,
     parts: req.body.parts || "",

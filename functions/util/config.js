@@ -1,4 +1,4 @@
-const firebaseConfig = {
+var firebaseConfig = {
   apiKey: "AIzaSyB8mRiACYrKT3wJCVVE69C4LgyWwUHmEZM",
   authDomain: "gps-client-6e57f.firebaseapp.com",
   databaseURL: "https://gps-client-6e57f.firebaseio.com",
