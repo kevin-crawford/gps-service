@@ -1,6 +1,7 @@
 const { db } = require("../util/admin");
 
 const { validateJobData } = require("../util/authenticators");
+const { getOneCustomer } = require("./customers")
 
 exports.getAllJobs = (req, res) => {
   db.collection("/jobs")
@@ -30,6 +31,8 @@ exports.getAllJobs = (req, res) => {
 };
 
 exports.getJobsByDate = (req, res) => {
+
+  
   db.collection("jobs")
     .where("jobDate", "==", req.body.jobDate)
     .orderBy("customer", "asc")
@@ -42,7 +45,6 @@ exports.getJobsByDate = (req, res) => {
           createdAt: doc.data().createdAt,
           jobId: doc.id,
           jobDate: doc.data().jobDate,
-          createdBy: doc.data().createdBy,
           notified: doc.data().notified,
           description: doc.data().description,
           parts: doc.data().parts,
@@ -60,36 +62,67 @@ exports.getJobsByDate = (req, res) => {
 
 exports.postOneJob = (req, res) => {
   
-  const newJob = {
-    customer: req.body.customer,
-    createdAt: new Date().toISOString(),
-    jobDate: req.body.jobDate || "",
-    notified: false,
-    description: req.body.description,
-    parts: req.body.parts || "",
-    comments: req.body.comments || ""
-  };
-
-  const { valid, errors } = validateJobData(newJob);
-
-  if (!valid) {
-    return res.status(400).json(errors);
-  }
-
-  db.collection("jobs")
-    .add(newJob)
+  db.doc(`/customers/${req.body.customer}`)
+    .get()
     .then(doc => {
-      res.json({
-        message: `Job ${req.body.description} on ${req.body.jobDate} for ${
-          req.body.customer
-        } created successfully`
-      });
+      // if it does not exists, respond with not found
+      if (!doc.exists) {
+        return res.status(400).json({ message: "Customer not found" });
+      } else {
+        // return data from document
+        console.log(doc.data());
+        const customer = {
+          name: doc.data().name,
+          customerId: doc.id,
+          address: doc.data().address,
+          phoneNum: doc.data().phoneNum,
+          createdAt: doc.data().createdAt
+        }
+        return customer;
+      }
     })
-    .catch(err => {
-      res.status(500).json({ error: "something went wrong" });
-      console.log(err);
-    });
+    .then( customer => {
+      console.log(customer);
+
+      const newJob = {
+        customer: customer,
+        createdAt: new Date().toISOString(),
+        jobDate: req.body.jobDate || "",
+        notified: false,
+        description: req.body.description,
+        parts: req.body.parts || "",
+        comments: req.body.comments || ""
+      };
+
+      
+      const { valid, errors } = validateJobData(newJob);
+
+      if (!valid) {
+        return res.status(400).json(errors);
+      }
+      
+      db.collection("jobs")
+        .add(newJob)
+        .then(doc => {
+          res.json({
+            message: `Job ${req.body.description} 
+                      on ${req.body.jobDate} 
+                      for ${newJob.customer.name} created successfully`
+          });
+        })
+        .catch(err => {
+          res.status(500).json({ error: "something went wrong" });
+          console.log(err);
+         });
+        })
+        .catch(err => {
+          console.error(err);
+          res.status(500).json({ message: "Something went wrong" });
+        });
 };
+
+  
+
 
 exports.uploadJobImage = (req, res) => {
   const BusBoy = require("busboy");

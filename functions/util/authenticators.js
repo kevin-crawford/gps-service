@@ -47,7 +47,7 @@ exports.validateLoginData = data => {
 exports.validateJobData = data => {
   let errors = {};
 
-  if (isEmpty(data.customer)) errors.customer = "Must not be empty";
+  if (typeof data.customer !== 'object' && data.customer !== null) errors.customer = "Must not be empty";
   if (isEmpty(data.description)) errors.description = "Must not be empty";
 
   return {

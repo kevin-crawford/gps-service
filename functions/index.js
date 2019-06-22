@@ -34,7 +34,7 @@ app.get("/users", FBAuth, getAuthenticatedUser);
 //TODO: 1 GET jobs by DATE, 2 GET jobs by CUST, 3 DELETE JOB by CUST, 4 EDIT job by CUST
 app.post("/jobs", FBAuth, postOneJob);
 app.get("/jobs", getAllJobs);
-app.get("/jobsbydate", getJobsByDate);
+app.post("/jobsbydate", getJobsByDate);
 app.post("/jobs/image", FBAuth, uploadJobImage);
 
 exports.api = functions.https.onRequest(app);
