@@ -92,3 +92,19 @@ exports.getOneCustomer = (req, res) => {
       res.status(500).json({ message: "Something went wrong" });
     });
 };
+
+exports.deleteCustomer = (req, res) => {
+  // ADD HOOK TO REMOVE RELATED JOBS TO CUSTOMER
+  db.collection(`/customers`)
+    .doc(req.body.customerId)
+    .delete()
+    .then(() => {
+      res.status(202).json({
+        message: `customer ${req.body.customerId} successfully deleted`
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+};

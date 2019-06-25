@@ -36,7 +36,6 @@ exports.validateLoginData = data => {
   let errors = {};
   if (isEmpty(data.email)) errors.email = "Must not be empty";
   if (isEmpty(data.password)) errors.password = "Must not be empty";
-  
 
   return {
     errors,
@@ -47,7 +46,8 @@ exports.validateLoginData = data => {
 exports.validateJobData = data => {
   let errors = {};
 
-  if (typeof data.customer !== 'object' && data.customer !== null) errors.customer = "Must not be empty";
+  if (typeof data.customer !== "object" && data.customer !== null)
+    errors.customer = "Must not be empty";
   if (isEmpty(data.description)) errors.description = "Must not be empty";
 
   return {
@@ -62,6 +62,18 @@ exports.validateCustomerData = data => {
   if (isEmpty(data.name)) errors.name = "Must not be empty";
   if (isEmpty(data.address)) errors.address = "Must not be empty";
   if (isEmpty(data.phoneNum)) errors.customer = "Must not be empty";
+
+  return {
+    errors,
+    valid: Object.keys(errors).length === 0 ? true : false
+  };
+};
+
+exports.validateActivityData = data => {
+  let errors = {};
+
+  if (isEmpty(data.name)) errors.name = "Must not be empty";
+  if (isEmpty(data.subject)) errors.subject = "Must not be empty";
 
   return {
     errors,
