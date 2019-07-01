@@ -93,6 +93,30 @@ exports.getOneCustomer = (req, res) => {
     });
 };
 
+exports.editCustomer = (req, res) => {
+  db.doc(`/customers/${req.params.customerId}`)
+    .get()
+    .then(doc => {
+      console.log(req.body);
+      if (!doc.exists) {
+        return res.status(404).json({ message: " Cannot find customer" });
+      } else {
+        let updatedInfo = req.body;
+        db.doc(`/customers/${req.params.customerId}`).set(updatedInfo, {
+          merge: true
+        });
+        return res
+          .status(200)
+          .json({ message: `updated customer fields with ${req.body}` });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+  // add logic to update related jobs with correct customer
+};
+
 exports.deleteCustomer = (req, res) => {
   // ADD HOOK TO REMOVE RELATED JOBS TO CUSTOMER
   db.collection(`/customers`)

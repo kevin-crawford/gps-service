@@ -1,7 +1,7 @@
 const { db } = require("../util/admin");
 
 const { validateJobData } = require("../util/authenticators");
-const { getOneCustomer } = require("./customers")
+const { getOneCustomer } = require("./customers");
 
 exports.getAllJobs = (req, res) => {
   db.collection("/jobs")
@@ -30,11 +30,32 @@ exports.getAllJobs = (req, res) => {
     });
 };
 
-exports.getJobsByDate = (req, res) => {
-
-  
+exports.getJob = (req, res) => {
   db.collection("jobs")
-    .where("jobDate", "==", req.body.jobDate)
+    .where("jobId", "==", req.params.jobId)
+    .get()
+    .then(data => {
+      return res.status(200).json({
+        customer: doc.data().customer,
+        createdAt: doc.data().createdAt,
+        jobId: doc.id,
+        jobDate: doc.data().jobDate,
+        createdBy: doc.data().createdBy,
+        notified: doc.data().notified,
+        description: doc.data().description,
+        parts: doc.data().parts,
+        comments: doc.data().comments
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      return res.status(500).json({ message: "Something Went Wrong" });
+    });
+};
+
+exports.getJobsByDate = (req, res) => {
+  db.collection("jobs")
+    .where("jobDate", "==", req.params.jobDate)
     .orderBy("customer", "asc")
     .get()
     .then(data => {
@@ -61,7 +82,6 @@ exports.getJobsByDate = (req, res) => {
 };
 
 exports.postOneJob = (req, res) => {
-  
   db.doc(`/customers/${req.body.customer}`)
     .get()
     .then(doc => {
@@ -77,11 +97,11 @@ exports.postOneJob = (req, res) => {
           address: doc.data().address,
           phoneNum: doc.data().phoneNum,
           createdAt: doc.data().createdAt
-        }
+        };
         return customer;
       }
     })
-    .then( customer => {
+    .then(customer => {
       console.log(customer);
 
       const newJob = {
@@ -94,13 +114,12 @@ exports.postOneJob = (req, res) => {
         comments: req.body.comments || ""
       };
 
-      
       const { valid, errors } = validateJobData(newJob);
 
       if (!valid) {
         return res.status(400).json(errors);
       }
-      
+
       db.collection("jobs")
         .add(newJob)
         .then(doc => {
@@ -113,16 +132,13 @@ exports.postOneJob = (req, res) => {
         .catch(err => {
           res.status(500).json({ error: "something went wrong" });
           console.log(err);
-         });
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).json({ message: "Something went wrong" });
         });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
 };
-
-  
-
 
 exports.uploadJobImage = (req, res) => {
   const BusBoy = require("busboy");

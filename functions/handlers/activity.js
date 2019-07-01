@@ -90,3 +90,17 @@ exports.postOneActivity = (req, res) => {
       console.log(err);
     });
 };
+
+exports.editActivity = (req, res) => {
+  db.doc(`/activity/${req.params.activity}`)
+    .set(req.body, {
+      merge: true
+    })
+    .then(doc => {
+      return res.status(200).json({ message: "activity edited successfully" });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: "Something went wrong" });
+    });
+};
