@@ -32,20 +32,25 @@ exports.getAllJobs = (req, res) => {
 
 exports.getJob = (req, res) => {
   db.collection("jobs")
-    .where("jobId", "==", req.params.jobId)
+    .doc(req.params.jobId)
     .get()
-    .then(data => {
-      return res.status(200).json({
-        customer: doc.data().customer,
-        createdAt: doc.data().createdAt,
-        jobId: doc.id,
-        jobDate: doc.data().jobDate,
-        createdBy: doc.data().createdBy,
-        notified: doc.data().notified,
-        description: doc.data().description,
-        parts: doc.data().parts,
-        comments: doc.data().comments
-      });
+    .then(doc => {
+      console.log(doc.data());
+      if (doc) {
+        return res.status(200).json({
+          customer: doc.data().customer,
+          createdAt: doc.data().createdAt,
+          jobId: doc.id,
+          jobDate: doc.data().jobDate,
+          createdBy: doc.data().createdBy,
+          notified: doc.data().notified,
+          description: doc.data().description,
+          parts: doc.data().parts,
+          comments: doc.data().comments
+        });
+      } else {
+        return res.status(500).json({ message: "Job Not Found" });
+      }
     })
     .catch(err => {
       console.error(err);

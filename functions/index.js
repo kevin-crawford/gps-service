@@ -69,6 +69,7 @@ app.get("/jobs/:jobId", getJob);
 app.get("/jobs", getAllJobs);
 app.get("/jobsbydate/:jobDate", getJobsByDate);
 app.post("/jobs/image", FBAuth, uploadJobImage);
+
 //TODO:  ,
 // 3 DELETE JOB
 // app.delete("/jobs/:jobId", FBAuth, deleteJob)
